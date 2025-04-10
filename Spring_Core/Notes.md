@@ -1,4 +1,4 @@
-                                                  <b> Spring Core Module </b>
+  <b> Spring Core Module </b>
 
 Spring: Spring is a lightweight, open-source Java framework designed to simplify the development of web and enterprise applications. It provides good support for building Java applications, mainly focusing on features like dependency injection, aspect-oriented programming, and easy integration with other technologies.
 
