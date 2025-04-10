@@ -12,3 +12,46 @@ IOC means object creation is handled by Spring, and DI (Dependency Injection) is
 Here, dependency means – every object has some fields right? So those fields are called dependencies. Giving values or objects to those fields is called injecting.
 
     
+Example: 
+'''java
+package com.myproject.java_spring;
+
+public class Employee {
+    private int id;
+    private String name;
+    private int age;
+
+    public Employee(int id, String name, int age) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+    }
+
+    public int getId() {
+        return id;
+    }
+    public int getAge() {
+return age;    }
+    public String getName() {
+        return name;
+    }
+
+    public void employeeDetails() {
+        System.out.println("Employee details - ID : " + getId() + "  name : " + getName() + " age : " + getAge() );
+    }
+}
+
+
+''' java
+package com.myproject.java_spring;
+
+public class SpringDemos {
+    public static void main(String[] args) {
+
+        Employee emp = new Employee(1,"Bhanu Prasad",5000);
+        emp.employeeDetails();
+
+    }
+}
+
+                  
