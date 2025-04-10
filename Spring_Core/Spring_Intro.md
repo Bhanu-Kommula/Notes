@@ -101,7 +101,7 @@ We define the beans and their dependencies using annotations in a configuration 
 
 
 
-Next Concept - https://github.com/Bhanu-Kommula/Notes/blob/2433fabe5a3cf289f479c57533aeeeb2509892d6/Spring_Core/XML-Based-Config.md
+Next Concept - https://github.com/Bhanu-Kommula/Notes/blob/dbe4956915f825fc6ad40c755712d5d364bd58c2/Spring_Core/XML-Based-Config.md
 
 
 
