@@ -243,24 +243,29 @@ This class has  6 dependencies ( 3 vlaues and 3 references)
     
 So, The above code is the tradiational XML based configuration. 
 
-Now lets use <bean> tag autowire attribute and ask the container to automatically inject the dependencies. 
 
-**autowire = "ByName"**
 
-So firstly,  ByName autowiring only works with setter methods. and there as to be a default constructor. 
-        We need this default constructore becase the the spring will create an object usingt this default constructor and then it will inject the dependencies.
+### Spring XML Autowiring – `autowire="byName"`
 
-Second, the field names ( variable names) and the bean ids should be the same. That way spring will inject the dependencies based on field names relating with bean ids.
+Now let's use the `<bean>` tag’s `autowire` attribute and ask the container to automatically inject the dependencies.
+
+####  `autowire = "byName"`
+
+1 **`byName` autowiring only works with setter methods**, and there must be a **default constructor** in the class.  
+   We need this because Spring will first create the object using the default constructor and then inject dependencies using the setter methods.
+
+2 The **field names (variable names)** in the class must match the **bean IDs** in the XML.  
+   That’s how Spring knows which bean to inject into which property.
+
+---
+
+
+
 
 
 so in the above code i made changes in the XML file.
 
-     //Employee.xml  [ OLD File ]
-
-    <?xml version="1.0" encoding="UTF-8"?>
-    <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+     //Employee.xml  [ OLD File -[Old – Manual Injection] ]
 
     <bean id="emp" class="com.myproject.java_spring.Employee">
        <property name="id" value="1"/>
@@ -291,7 +296,7 @@ so in the above code i made changes in the XML file.
     </beans>
 
 
-    // Employee.xml  [ New file ]
+    // Employee.xml  [ New file  - [New – Autowiring by Name]]
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -323,12 +328,17 @@ so in the above code i made changes in the XML file.
 
     </beans>
 
-In the regular way instead of declearing the address,salary and vehicle classes objs as ref using <property>   I have simply used autowire = "byName" and made sure that the other class ids and the employee class variable(field names)  same. that way 
+In the regular way, we used <property> tags to manually inject the Address, EmployeeSalary, and Vehicle beans using ref.
 
-spring will inject the values dependencies and then as we gave the attribute byName so, it will go see for the leftover fields ( so id, name and age is injected and address,salary and vehicle is leftover) so will see if there any bean ids with same feild names. so we already have them same so it will directly inject them. 
+Now with autowire="byName", Spring will handle this for us automatically by checking:
 
+    Which dependencies are already injected (id, name, age) via <property>
+    Which ones are leftover (address, salary, vehicle)
+    Then it looks at the bean IDs in the XML — since we named them the same as the field names, Spring injects them directly using setters.
 
-            //output 
+No need to manually declare the <property name="..." ref="..." /> lines for those!
+           
+        //output 
           
     BhanuPrasad
     Dallas
@@ -340,10 +350,57 @@ spring will inject the values dependencies and then as we gave the attribute byN
     Process finished with exit code 0
 
 
+### Spring XML Autowiring – `autowire="byType"`
+
+When you use **`autowire="byType"`**, Spring will:
+
+Look at the **type of the property** in your class (like `Address`, `EmployeeSalary`, `Vehicle`)  
+Then inject the matching bean by **class type**, not by bean ID
+
+---
+
+### Key Points:
+
+- It **still requires** a **default constructor**
+- It needs **setter methods** in your class (since it's setter-based injection)
+- There must be **only one matching bean per type** — otherwise Spring will throw an error
+
+---
+
+so,
+When we use `autowire="byType"`, Spring checks:
+- What are the **leftover fields** that haven’t been injected manually
+- Then it looks into the XML config to see if there are any beans where the **class type matches the property type** in your class
+
+If it finds **exactly one matching bean**, it will automatically inject it  
+If multiple beans of the same type exist, Spring won’t know which one to pick and will throw an error
 
 
+    //EMployee.XML file
+
+    <bean id="emp" class="com.myproject.java_spring.Employee" autowire="byType">
+       <property name="id" value="1"/>
+        <property name="name" value="BhanuPrasad"/>
+        <property name="age" value="24"/>
 
 
+    </bean>
+
+    <bean id="address" class="com.myproject.java_spring.Address">
+        <property name="state" value="Tx"/>
+        <property name="city" value="Dallas"/>
+        <property name="zipCode" value="22331"/>
+    </bean>
+
+    <bean id="salary" class=" com.myproject.java_spring.EmployeeSalary">
+        <constructor-arg value="10000"/>
+    </bean>
+
+    <bean id="vehicle" class="com.myproject.java_spring.Vehicle">
+        <property name="make" value="Honda"/>
+        <property name="model" value="Hrv - Sport"/>
+        <property name="year"   value="2023"/>
+    </bean>
 
 
 
