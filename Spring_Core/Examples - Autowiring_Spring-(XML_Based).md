@@ -423,3 +423,121 @@ If multiple beans of the same type exist, Spring won’t know which one to pick 
     Employee details - ID : 1  name : BhanuPrasad age : 24 address :   Dallas  Tx  22331 salary : 10000.0 Vehicle : Honda  Hrv - Sport  2023
 
     Process finished with exit code 0
+
+### `autowire="constructor"` in Spring XML
+
+To use **constructor-based autowiring**, there should be a **constructor** in the class that accepts all the dependencies as parameters.
+
+Now, in the XML file, we use the `autowire="constructor"` attribute inside the `<bean>` tag.
+
+When using this, **Spring will try to inject all constructor parameters automatically by type**.  
+So you **don't need to specify `<constructor-arg>` manually** — but only **if all parameters are object types and their beans are defined**.
+
+
+###  Important Note:
+If your constructor includes **primitive types** like `int`, `String`, etc., then **Spring cannot autowire them** by type — because those are not beans.
+
+So in that case, even with `autowire="constructor"`, you must manually provide those values using `<constructor-arg>` for primitive values, and Spring will autowire the rest (object types like `Address`, `Vehicle`, etc.)
+
+
+### Best Practice:
+
+If you want to use a constructor with both primitive and object dependencies, the **recommended way** is:
+
+
+Employee class
+
+    //employee.java
+    
+        package com.myproject.java_spring;
+
+    public class Employee {
+    private int id;
+    private String name;
+    private int age;
+    private Address address;
+    private EmployeeSalary salary;
+    private Vehicle vehicle;
+
+    public Employee(int id, String name, int age, Address address, EmployeeSalary salary, Vehicle vehicle) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.address = address;
+        this.salary = salary;
+        this.vehicle = vehicle;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public EmployeeSalary getSalary() {
+        return salary;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void getEmployeeDetails() {
+        System.out.println("Employee details - ID : " + getId() + "  name : " + getName() + " age : " + getAge() + " address : " + address.getAddress() + " salary : " + salary.getSalary() + " Vehicle :" + vehicle.getCarDetails());
+    }
+    }
+
+Employee.xml 
+
+        //Employee.xml 
+
+
+    <bean id="emp" class="com.myproject.java_spring.Employee" autowire="constructor">
+      <constructor-arg value="1"/>
+        <constructor-arg value="Bhanu"/>
+        <constructor-arg value="25"/>
+        <constructor-arg ref="address"/>
+        <constructor-arg ref="salary"/>
+        <constructor-arg ref="vehicle"/>
+
+    </bean>
+
+    <bean id="address" class="com.myproject.java_spring.Address">
+        <property name="state" value="Tx"/>
+        <property name="city" value="Dallas"/>
+        <property name="zipCode" value="22331"/>
+    </bean>
+
+    <bean id="salary" class=" com.myproject.java_spring.EmployeeSalary">
+        <constructor-arg value="10000"/>
+    </bean>
+
+    <bean id="vehicle" class="com.myproject.java_spring.Vehicle">
+        <property name="make" value="Honda"/>
+        <property name="model" value="Hrv - Sport"/>
+        <property name="year"   value="2023"/>
+    </bean>
+  
+output
+
+      //output 
+          
+    BhanuPrasad
+    Dallas
+    Car Model is Hrv - Sport
+    ----------------- 
+
+    Employee details - ID : 1  name : BhanuPrasad age : 24 address :   Dallas  Tx  22331 salary : 10000.0 Vehicle : Honda  Hrv - Sport  2023
+
+    Process finished with exit code 0
+
