@@ -403,12 +403,6 @@ If multiple beans of the same type exist, Spring won’t know which one to pick 
     </bean>
 
 
-
-
-
-
-
-
             //output 
           
     BhanuPrasad
