@@ -30,8 +30,8 @@ If there’s exactly one bean of that type, Spring will inject it.
 This will throw an error if multiple beans of the same type exist — Spring won’t know which one to inject.
 
 
-  <bean id="employee" class="com.myproject.Employee" autowire="byType"/>
-  <bean id="addressBean" class="com.myproject.Address"/>
+     <bean id="employee" class="com.myproject.Employee" autowire="byType"/>
+     <bean id="addressBean" class="com.myproject.Address"/>
 
 
 Here, even though the id is different, Spring will inject it because the type matches Address.
@@ -43,8 +43,8 @@ This works like byType, but applies to constructor arguments instead of properti
 
 Spring looks at the constructor parameters and tries to match them by type from the available beans.
 
-<bean id="employee" class="com.myproject.Employee" autowire="constructor"/>
-<bean id="address" class="com.myproject.Address"/>
+     <bean id="employee" class="com.myproject.Employee" autowire="constructor"/>
+     <bean id="address" class="com.myproject.Address"/>
 
 
 If the Employee constructor takes an Address object, Spring will automatically inject the matching bean.
