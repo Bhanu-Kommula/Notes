@@ -49,14 +49,14 @@ Example:
     }
     }
 
-This is the employee class it has 4 dependencies ( which include 3 varibales and one object(address class)).
+This is the employee class, it has 4 dependencies ( which include 3 varibales and one object(address class)).
          
      private int id;
      private String name;
      private int age;
      private Address address;
 
-and also has the 4 argument constructor. and getter methods along with getEmployeeDetails()  which is printing out complete employee details. 
+and also has the 4-argument constructor. and getter methods along with getEmployeeDetails()  which is printing out complete employee details. 
 
 
     // Address. Java
@@ -104,7 +104,7 @@ and also has the 4 argument constructor. and getter methods along with getEmploy
     private String State;
     private int zipCode;
 
-and setter and getter methods to set and get the values and also one getAddress method which return all the values (dependencies together)
+and setter and getter methods to set and get the values, and also one getAddress method which returns all the values (dependencies together)
 
 
     //Employee.XML 
@@ -128,19 +128,19 @@ and setter and getter methods to set and get the values and also one getAddress 
     </bean>
     </beans>
 
-This is the xml file. here we declare all the beans and dependencies. 
+This is the XML file. here we declare all the beans and dependencies. 
 
-initally we are delcreing the <?xml> to let the java complier know this is the xml file .
+Initially, we are declaring the <?xml> to let the java complier know this is the xml file .
 
 
      <Beans>  ( this is the opening tag of Beans)
      </Beans> ( this is the closing tag of Beans)
 
-So we declare all the beans inside the <Beans> tag. and the <Beans> contains the defination of spring beans mean .  dont worry about we can copy it direclty from the google or if you are using maven project then maven will handle it for you(it will come direclty when create the xml file in a maven project).
+So we declare all the beans inside the <Beans> tag. and the <Beans> tag contains the definition of spring beans mean.  Don't worry about we can copy it directly from the Google, or if you are using Maven project, then Maven will handle it for you(it will come directly when creating the XML file in a Maven project).
 
-now to declare Bean we use open and close <Bean> tags
+Now to declare a Bean, we use open and close <Bean> tags
 
-Usally the Bean tag has two thinsg 
+Usually the Bean tag has two things 
   
     1 - ID = ""  Id can be anything its basically like give you bean a name to call or use that bean whenever we need it.
     2 - class = "" in the class, we give the complete class path for which we want to create the bean.
@@ -153,22 +153,22 @@ So simply, in a Bean tag we will say like
 
   now DI 
 
-  So in XML Based Configuration the dependency injection can be done in two ways
+  So, in  XML-based configuration the dependency injection can be done in two ways
 
       1 - setter injection ( we inject dependencies usign the setter methods)
       2 - Constructor injection ( we inject dependencies usign the Constructor )
 
 
   So in the above code, 
-      for Employee class, the dependencies were injected using constructor injection.
-      for Address class, the dependencies were injected using setter injection.
+      for the Employee class, the dependencies were injected using constructor injection.
+      For the Address class, the dependencies were injected using setter injection.
 
 
   <b> Constructor Injection </b>
 
   so we know <bean id="" class=""> is used to create the Bean (object )
 
-  now in order to do constructor injection we will use the <constructor-arg> tag
+  Now to do constructor injection, we will use the <constructor-arg> tag
 
     <bean id="emp" class="com.myproject.java_spring.Employee">
         
@@ -179,14 +179,14 @@ So simply, in a Bean tag we will say like
         
     </bean>
 
-So the <constructor-arg> tag is used to inject the dependecies (values) so we specify under the values property (values ="") and as we are doing based on constructor, the index property is used to say the index of the parameters. as we know the id is the first parameter so declared the index as 0 and as we know the address obj is last (4) parameter so we declared the index value as 3.
+So the <constructor-arg> tag is used to inject the dependecies (values) so we specify under the values attribute (values ="") and as we are doing based on constructor, the index attribute is used to say the index of the parameters. as we know the id is the first parameter so declared the index as 0 and as we know the address obj is last (4) parameter so we declared the index value as 3.
 
-so to inject values we use the value property and to inject the objects we use the reference property (ref = "" ). As in our case the address variable is used to hold the Address class object so we used the ref = "" instead of value = "".  The ref = " reference class bean id " so we pass the bean id of other class as reference so in our case the bean id of Address class is add so we passed ( ref = "add")
+So to inject values we use the value attribute and to inject the objects we use the reference attribute (ref = "" ). As in our case, the address variable is used to hold the Address class object so we used the ref = "" instead of value = "".  The ref = " reference class bean id " so we pass the bean id of other class asa  reference so in our case the bean id of the Address class is add so we passed ( ref = "add")
 
 
   <b> Setter Injection </b>
 
- The <property> tag is used to inject the depndencies (values) in the setter injection. 
+ The <property> tag is used to inject the dependencies (values) in the setter injection. 
 
     <bean id="add" class="com.myproject.java_spring.Address">
     
@@ -227,10 +227,10 @@ Finally the main class.
     }
 
  
- ApplicationContext context = new ClassPathXmlApplicationContext("Employee.xml");   is used to load the container so at the time of this class creation it will go to the Employee.xml file creates all the beans and inject the dependencies. 
+ ApplicationContext context = new ClassPathXmlApplicationContext("Employee.xml");   is used to load the container so at the time of this class creation it will go to the Employee.xml file create all the beans and inject the dependencies. 
 
- now using the getBean(" bean id ")  we are getting the object. 
- so the getBean() returns an object. in our case we are requesting the container to give the bean of employee. 
+ Now using the getBean(" bean id ")  we are getting the object. 
+ so the getBean() returns an object. In our case, we are requesting the container to give the bean of employee. 
                      
                      Employee employee = (Employee) context.getBean("emp");
 
