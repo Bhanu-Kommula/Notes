@@ -67,7 +67,7 @@ This class has the employee details. It contains:
 These are defined as fields — basically, they are the dependencies.
 We also have a three-argument constructor.
 
-  ** Constructor is nothing but a special method that is used to initialize the values directly at the time of object creation. **
+  ** <b>Constructor is nothing but a special method that is used to initialize the values directly at the time of object creation. </b> **
 
 So here we are using the constructor to load the dependencies, and we have getter methods to return those dependency values. We also have employeeDetails() method to print the complete info of the employee.
 
