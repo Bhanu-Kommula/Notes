@@ -1,0 +1,24 @@
+
+
+In Spring, we can let the container automatically inject the dependencies using the **`autowire`** attribute in the `<bean>` tag.
+
+So instead of manually using `<constructor-arg>` or `<property>`, we can tell Spring to do it for us based on matching **name**, **type**, or **constructor**.
+
+There are mainly **3 common autowiring modes**:
+
+---
+
+`autowire="byName"`
+
+- Spring checks the bean's property name.
+- If there’s another bean with the **same ID as the property name**, Spring will inject that bean automatically.
+
+ *So here, the name of the property and the bean ID in the XML should be the same.*
+
+```xml
+<bean id="employee" class="com.myproject.Employee" autowire="byName"/>
+<bean id="address" class="com.myproject.Address"/>
+
+If Employee class has a property named address, and there is a bean with id="address", Spring will inject it automatically.
+
+
