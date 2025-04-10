@@ -1,6 +1,5 @@
-
-
-In Spring, we can let the container automatically inject the dependencies using the **`autowire`** attribute in the `<bean>` tag.
+So, till now we were injecting the dependencies using **constructor** or **setter injections**,  
+but we can also directly ask the Spring container to automatically inject the dependencies using the **`autowire`** attribute in the `<bean>` tag.
 
 So instead of manually using `<constructor-arg>` or `<property>`, we can tell Spring to do it for us based on matching **name**, **type**, or **constructor**.
 
