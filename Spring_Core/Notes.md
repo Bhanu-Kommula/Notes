@@ -1,4 +1,4 @@
-                                                            ** Spring Core Module **
+                                                  ** Spring Core Module **
 
 Spring: Spring is a lightweight, open-source Java framework designed to simplify the development of web and enterprise applications. It provides good support for building Java applications, mainly focusing on features like dependency injection, aspect-oriented programming, and easy integration with other technologies.
 
@@ -60,27 +60,21 @@ So here in the above Java code, we have 2 classes:
 1 - Employee class
 This class has the employee details. It contains:
 
-Employee ID
-
-Employee Name
-
-Employee Age
+        Employee ID
+        Employee Name
+        Employee Age
 
 These are defined as fields — basically, they are the dependencies.
 We also have a three-argument constructor.
 
-Constructor is nothing but a special method that is used to initialize the values directly at the time of object creation.
+  ** Constructor is nothing but a special method that is used to initialize the values directly at the time of object creation. **
 
-So here we are using the constructor to load the dependencies, and we have getter methods to return those dependency values.
-We also have employeeDetails() method to print the complete info of the employee.
+So here we are using the constructor to load the dependencies, and we have getter methods to return those dependency values. We also have employeeDetails() method to print the complete info of the employee.
 
 2 - SpringDemos class (Main class)
-In this class:
 
-We are creating an object of the Employee class.
-
+In this class, We are creating an object of the Employee class.
 Injecting the dependencies via the 3-argument constructor (since the Employee class has a constructor that takes 3 values).
-
 Then calling employeeDetails() to display the employee info.
 
 Here, we are creating the object using new keyword and also manually injecting the dependencies.
