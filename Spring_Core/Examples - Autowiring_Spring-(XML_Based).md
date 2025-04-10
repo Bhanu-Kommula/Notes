@@ -76,6 +76,7 @@ This class has  6 dependencies ( 3 vlaues and 3 references)
     private Vehicle vehicle;
 
 
+Address class
 
       //Address.java
 
@@ -115,6 +116,7 @@ This class has  6 dependencies ( 3 vlaues and 3 references)
     }
     }
 
+Salary class
 
       //Salary.java
 
@@ -132,6 +134,8 @@ This class has  6 dependencies ( 3 vlaues and 3 references)
     }
 
     }
+
+Vehicle class
 
     //Vehicle.java
 
@@ -171,6 +175,8 @@ This class has  6 dependencies ( 3 vlaues and 3 references)
     }
     }
 
+Employee XMl file
+
     //Employee.xml
 
     <?xml version="1.0" encoding="UTF-8"?>
@@ -207,6 +213,8 @@ This class has  6 dependencies ( 3 vlaues and 3 references)
     </beans>
 
 
+Main class
+
     //SpringDemos.java(main class)
       
         package com.myproject.java_spring;
@@ -227,7 +235,8 @@ This class has  6 dependencies ( 3 vlaues and 3 references)
     }
     }
 
-    
+output
+
             //output 
           
     BhanuPrasad
