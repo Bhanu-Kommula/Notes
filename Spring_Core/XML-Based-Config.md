@@ -237,3 +237,8 @@ Finally the main class.
 So the getBean() returns us the Employee class object so we are typcasting it and storing in Employee type employee variable. 
 
 and using this variable to access the data. 
+
+
+
+Next Concept - https://github.com/Bhanu-Kommula/Notes/blob/2433fabe5a3cf289f479c57533aeeeb2509892d6/Spring_Core/Autowiring_Spring-(XML_Based).md
+Previous Concpet - https://github.com/Bhanu-Kommula/Notes/blob/2433fabe5a3cf289f479c57533aeeeb2509892d6/Spring_Core/Spring_Intro.md
