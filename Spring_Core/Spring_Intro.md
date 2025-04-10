@@ -81,6 +81,8 @@ Here, we are creating the object using new keyword and also manually injecting t
 So instead of doing this manually, we can give this job to Spring Container — which will take care of object creation and dependency injection automatically.
 
 
+<b> IoC-DI-Configuration-Types </b>
+
 So now we know that we can Spring core module can handle the inversion of control and dependency injection.  
 
 So we can achieve this in 3 primary was
