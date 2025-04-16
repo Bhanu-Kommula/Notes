@@ -1,0 +1,25 @@
+**Servlets**
+
+Servlets are Java programs, but instead of running them like regular Java apps with a compiler and main method, we run servlets on a web server. That means we need a web server like Apache 
+Tomcat, Jetty, etc. Among these, Tomcat is one of the most popular.
+
+Servlets are a server-side technology, which means they’re executed by the web server.
+
+To put it simply, a Servlet is a Java-based web component that runs on the server (inside a container like Tomcat) and is used to generate dynamic content—like HTML, JSON, etc.—based on 
+client requests.
+
+Servlets are mainly used for handling HTTP requests on the server side and generating dynamic responses. 
+So,
+	•	When a user interacts with a webpage (say clicks a button or submits a form), a request goes to the server.
+	•	A servlet handles that request on the server.
+	•	It processes the data (maybe talks to a database or performs some logic).
+	•	Then it generates a dynamic response—usually HTML, JSON, or XML—and sends it back to the browser.
+
+We use servlets to:
+	•	Handle web requests (like form submissions)
+	•	Talk to databases
+	•	Generate dynamic content (HTML/JSON/etc.)
+	•	Serve as the backend logic of a web application
+
+If we want to send anything to the backend or get something back from the backend, we need something like Servlets to handle it.
+
