@@ -1,0 +1,60 @@
+What is REST? Why REST? - Representational State Transfer.
+
+REST is a style or set of rules that helps communicate between two systems over the internet using the HTTP protocol.
+
+It is commonly used for:
+    Frontend ↔️ Backend communication
+    Microservice-to-microservice communication
+
+In REST, we follow certain design rules while building the application. These rules define how to send requests, how to get responses, and what format to use (like JSON).  We’ll learn all these REST rules in upcoming lessons.
+
+We send HTTP requests (like:
+GET, POST, PUT, DELETE) using REST, and in return, we receive a response — usually in JSON or sometimes in HTML/XML format.
+
+Why REST is Popular:
+
+        Platform Independent – Works across Android, Web, React, Java, etc.
+        Easy to Use – Simple URL and HTTP method-based system
+        Lightweight – Uses JSON, minimal overhead
+        Easy to Test – Tools like Postman make testing very simple
+        Widely Used – Almost every real-time project uses REST APIs
+
+Client-Server Architecture: 
+
+In REST, communication happens between two systems:
+
+Client – the one who makes the request
+Server – the one who processes the request and sends back a response
+
+The response is usually sent in JSON format, but it can also be in HTML or XML, depending on the API.
+
+Independent Systems
+
+The client and server are built independently.
+They don’t need to know how each other works internally.
+The only thing they share is a common agreement called the API contract.
+
+What is an API Contract?
+An API contract is a mutual agreement between client and server that defines:
+
+What’s Included	Example
+Request format	What data is expected (e.g., JSON)
+Response format	What fields will be returned
+URL structure	Example: /students/1
+HTTP method	GET, POST, PUT, DELETE, etc.
+Status codes	200 OK, 404 Not Found, etc.
+
+Real Example:
+Let’s say:
+
+      Database has 5 columns
+      UI wants to display only 3 columns
+      So, the backend should only return 3 fields in the JSON.
+      This is part of the contract — the client and server must agree on:
+      What fields are sent
+      In what format
+      Through which URL and method
+
+That’s what we call an API Contract.
+
+
