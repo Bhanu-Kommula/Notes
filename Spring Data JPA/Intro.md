@@ -72,6 +72,36 @@ StudentInfoModel.java
 
     // Getters & Setters, Constructors (can be auto-generated)
     }
+
+or ex
+
+
+    import jakarta.validation.constraints.Min;
+    import jakarta.validation.constraints.NotBlank;
+    
+    public class StudentInfoModel {
+
+    @NotBlank(message = "Name is required")
+    private String name;
+
+    @Min(value = 1, message = "Age must be at least 1")
+    private int age;
+
+    private String city;
+    private String country;
+
+    @Min(value = 0, message = "Maths marks cannot be negative")
+    private int maths;
+
+    @Min(value = 0, message = "Physics marks cannot be negative")
+    private int physics;
+
+    @Min(value = 0, message = "Chemistry marks cannot be negative")
+    private int chemistry;
+
+    // Constructors, getters, setters
+    }
+
 or other exm
 
     import jakarta.persistence.*;
