@@ -43,6 +43,14 @@ ddl-auto=update	                          If entity class changes, update table 
 show-sql=true	                            Print SQL queries in console
 hibernate.dialect=Oracle10gDialect	      Tell Hibernate to generate Oracle-style SQL
 
+Very important!
+
+Value	                  What it does
+none	                  Don’t touch the schema
+update	            Update the schema if entity changes (safe for dev)
+create	                  Drop and recreate every time you run (use carefully!)
+validate	              Check if schema matches entity (good for prod)
+
 
  If you don’t write ddl-auto, Spring won’t create any tables. It expects you to create tables manually. and if table exist already then you can work on that but spring automatically cant create in absence of table.
 
