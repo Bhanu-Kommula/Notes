@@ -121,20 +121,20 @@ DTO gives us full control over:
       What we expose
       What we validate
 
-package com.myprojects.studentmgmt.dto;
-
-// Lombok to reduce boilerplate code
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-
-// Validation annotations
-import jakarta.validation.constraints.*;
-
-@Data  // Generates getters/setters/toString/hashCode
-@NoArgsConstructor  // No-argument constructor required for frameworks
-@AllArgsConstructor  // All-argument constructor for easy mapping
-public class StudentDTO {
+                package com.myprojects.studentmgmt.dto;
+                
+                // Lombok to reduce boilerplate code
+                import lombok.Data;
+                import lombok.NoArgsConstructor;
+                import lombok.AllArgsConstructor;
+                
+                // Validation annotations
+                import jakarta.validation.constraints.*;
+                
+                @Data  // Generates getters/setters/toString/hashCode
+                @NoArgsConstructor  // No-argument constructor required for frameworks
+                @AllArgsConstructor  // All-argument constructor for easy mapping
+                public class StudentDTO {
 
     /**
      * Student name must not be blank or null.
