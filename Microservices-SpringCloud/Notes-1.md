@@ -156,3 +156,30 @@ Port: 9411
 
 Adhering to these standards ensures smooth interaction and avoids conflicts in a distributed system.
 
+
+
+
+
+So now we have the basic limits service ready, let's build the Spring Cloud Config server 
+
+Create a new project using spring boot starter 
+dependencies 
+
+           Spring Dev Tools
+           Config Server
+
+
+Application.properties -- change the port num, the standardized port number for spring cloud config server is 8888
+
+            spring.application.name=spring-cloud-config-server
+            server.port=8888
+
+
+So now we have use the @ to make this to make it work like a real config server 
+
+
+
+
+
+Now as we have limits service and also a config server up running let's now create the Git Repo
+
