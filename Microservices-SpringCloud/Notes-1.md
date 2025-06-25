@@ -17,6 +17,7 @@ Dependencies -->
         Spring Actuator for monitoring and managing the application
         Config client - this helps the microservice to talk to the Spring Cloud config server
 
+<img width="1236" alt="image" src="https://github.com/user-attachments/assets/0634cbd6-09d2-4e58-9829-cda020238de0" />
 
 Now lets create a limits microservice and this will talk to the config server. 
 
