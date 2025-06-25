@@ -187,7 +187,22 @@ Now that we have limits service and also a config server up running, let's creat
 
 Git - used as a version control system, so go to git-scm.com and download the git client
 
- so after downloading the git go to the dir where you want to have the git repo and then create a new dir using mkdir 
+ so, after downloading the git go to the dir where you want to have the git repo and then create a new dir using mkdir git-localconfig-repo
 
 
+git commands used
+
+      git --version - to check the version 
+
+      pwd - present working directory to know where you are ( which directory you are in currently)
+      cd -- change directory - used to go the directory you want like ex - cd Documents/BhanuProject/ this will take me to bhanuproject dir 
+
+      mkdir - to create a new directory 
+      
+       /Users/bhanuprasadkommula/Documents/BhanuProject/git-localconfig-repo/
+
+            git init - this will initialize an empty repository so that we can make use of this dir as a git repo
+
+
+            
 
