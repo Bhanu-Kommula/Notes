@@ -11,6 +11,8 @@ Spring cloud: Key Microservice solutions
 Spring cloud Config Serve : This will helps us to implement Centralised Configurations here we will have the configuration relaterd to all the microservices and env in one git repo. 
 
 
+Lets Build **Centralised Configuration**
+
 Dependencies --> 
 
         Spring Web for building REST and web applications
