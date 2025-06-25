@@ -291,3 +291,19 @@ so file looks like
             
 
 
+Now let's see how we store separate configuration for limit service ( like qa, dev,) and how do we make use of it Spring Cloud Config Server. 
+
+
+so create multiple files in git repo (git-localconfig-repo) 
+
+            create multiple files like 
+                  limits-service-dev.properties
+                  limits-service-qa.properties
+
+                  and add the diff limits accordingly. 
+
+so to view the limits of diff profiles/environments, use 
+
+      http://localhost:8888/limits-service/qa
+      http://localhost:8888/limits-service/dev
+            
