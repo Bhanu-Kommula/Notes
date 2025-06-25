@@ -306,4 +306,24 @@ so to view the limits of diff profiles/environments, use
 
       http://localhost:8888/limits-service/qa
       http://localhost:8888/limits-service/dev
+
+
+so now we have values for multiple env picked up from git repo but how to make the application to pick these from cloud config server 
+
+to do configure in the application.properties of limit service
+
+                        spring.application.name=limits-service
+            spring.config.import=optional:configserver:http://localhost:8888
             
+            spring.profiles.active=dev
+            spring.cloud.config.profile=dev
+
+| Property                          | Used by             | Purpose                              |
+| --------------------------------- | ------------------- | ------------------------------------ |
+| `spring.profiles.active=dev`      | Spring Boot         | Activates the `dev` profile in app   |
+| `spring.cloud.config.profile=dev` | Spring Cloud Client | Fetches the `dev` config from server |
+
+
+spring.cloud.config.profile=dev → tells the Config Client what profile to fetch from the Config Server
+
+spring.profiles.active=dev → activates that profile inside the application after it's fetched
