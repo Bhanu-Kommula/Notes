@@ -176,9 +176,24 @@ Application.properties -- change the port num, the standardized port number for 
             server.port=8888
 
 
-So now we have use the @ to make this to make it work like a real config server 
+So now we have use the @EnableConfigServer to make this to make it work like a real config server 
 
-
+            
+            package com.myprojects.microservices;
+            
+            import org.springframework.boot.SpringApplication;
+            import org.springframework.boot.autoconfigure.SpringBootApplication;
+            import org.springframework.cloud.config.server.EnableConfigServer;
+            
+            @EnableConfigServer
+            @SpringBootApplication
+            public class SpringCloudConfigServerApplication {
+            
+            	public static void main(String[] args) {
+            		SpringApplication.run(SpringCloudConfigServerApplication.class, args);
+            	}
+            
+            }
 
 
 
@@ -206,7 +221,45 @@ git commands used
 Now open a text editor (vscode) and navigate to that folder and create a new file name it as limits-service.properties,  so let's store limit-service properties in this repository. Now copy the limitservice properties from application.properties of limitservice. 
 
 
+our current limit service - application.properties has 
+
+                              spring.application.name=limits-service
+            spring.config.import=optional:configserver:http://localhost:8888
+            
+            limitsservice.minimum=3
+            limitsservice.maximum=997
+
+            
+Move the properties of limitservice to limits-services.properties
+limits-services.properties
+
+                        
+            limitsservice.minimum=3
+            limitsservice.maximum=997
 
 
+So now we have the limits-service.properties ready to commit to the repository.
+
+                  ls  - gives the list of all the files in the directory
+                  git add limits-services.properties   or git add * - to add all the files 
+                  git commit -m "adding the limit-service properties" 
+
+
+So now we have limit service, a config server, and also a repo and now lets connect them together. 
+
+
+first lets connect spring cloud config server to git repo
+
+To do that, go to application.properties of spring-cloud-config-server  and configure the folder 
+
+            
+            spring.application.name=spring-cloud-config-server
+            server.port=8888
+            
+            spring.cloud.config.server.git.uri= file:///Users/bhanuprasadkommula/Documents/BhanuProject/git-localconfig-repo
+
+            
+
+             
             
 
