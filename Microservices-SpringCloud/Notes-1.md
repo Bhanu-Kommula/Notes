@@ -170,13 +170,13 @@ dependencies
            Config Server
 
 
-Application.properties -- change the port num, the standardized port number for spring cloud config server is 8888
+Application.properties -- change the port number,  as our limit service is also running on port 8080, we are changing the port number and the standardized port number for spring cloud config server is 8888
 
             spring.application.name=spring-cloud-config-server
             server.port=8888
 
 
-So now we have use the @EnableConfigServer to make this to make it work like a real config server 
+So now we have to use the @EnableConfigServer to make to make it work like a real config server 
 
             
             package com.myprojects.microservices;
@@ -250,7 +250,7 @@ So now we have limit service, a config server, and also a repo and now lets conn
 
 first lets connect spring cloud config server to git repo
 
-To do that, go to application.properties of spring-cloud-config-server  and configure the folder 
+To do that, go to the application.properties of spring-cloud-config-server  and configure the folder 
 
             
             spring.application.name=spring-cloud-config-server
@@ -259,7 +259,33 @@ To do that, go to application.properties of spring-cloud-config-server  and conf
             spring.cloud.config.server.git.uri= file:///Users/bhanuprasadkommula/Documents/BhanuProject/git-localconfig-repo
 
             
+This connects the config server with repo to check open 
+
+            http://localhost:8888/limits-service/default    will give the limits values from repo 
+
+
 
              
+Now let's connect our limit service to the Spring Cloud Config server 
+
+So to connect the limit service to the Spring Cloud Config server, we need two main configurations, which we already made 
+
+            1. spring-cloud-started-config ( starter.io --  config client) This dependency will help to talk with config server
+
+      2. In application.properties of limit service 
+
+       spring.config.import=optional:configserver:http://localhost:8888   or        spring.config.import=configserver:http://localhost:8888   - we are saying to import the config server from http://localhost:8888. 
+
+       and also we need to say what configuration in the config server should this application make use of. so in our case we want the application to make use of limits-service.propeties file
+
+       
+       spring. application.name=limits-service
+
             
+so file looks like 
+            
+            spring.application.name=limits-service
+            spring.config.import=optional:configserver:http://localhost:8888
+            
+
 
