@@ -201,7 +201,11 @@ git commands used
       
        /Users/bhanuprasadkommula/Documents/BhanuProject/git-localconfig-repo/
 
-            git init - this will initialize an empty repository so that we can make use of this dir as a git repo
+            git init - this will initialize an empty repository so that we can make use of this dir to store all our configuration files in this dir ( git-localconfig-repo)
+
+Now open a text editor (vscode) and navigate to that folder and create a new file name it as limits-service.properties,  so let's store limit-service properties in this repository. Now copy the limitservice properties from application.properties of limitservice. 
+
+
 
 
             
