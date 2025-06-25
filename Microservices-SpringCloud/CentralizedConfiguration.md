@@ -327,3 +327,9 @@ to do configure in the application.properties of limit service
 spring.cloud.config.profile=dev → tells the Config Client what profile to fetch from the Config Server
 
 spring.profiles.active=dev → activates that profile inside the application after it's fetched
+
+
+
+Now if we want use more different property files ( lets say if we have 3 different miceroservices and then there would diff property files right) to add them we can say 
+
+      spring.cloud.config.name=name
