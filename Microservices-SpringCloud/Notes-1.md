@@ -182,5 +182,12 @@ So now we have use the @ to make this to make it work like a real config server
 
 
 
-Now as we have limits service and also a config server up running let's now create the Git Repo
+Now that we have limits service and also a config server up running, let's create the Git Repo
+
+
+Git - used as a version control system, so go to git-scm.com and download the git client
+
+ so after downloading the git go to the dir where you want to have the git repo and then create a new dir using mkdir 
+
+
 
