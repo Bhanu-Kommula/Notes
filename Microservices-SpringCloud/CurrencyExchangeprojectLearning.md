@@ -354,6 +354,105 @@ Now that we have the method ready, let's call the api
 	}
 
 
-Now, as we have our currency exchange working, let's build our currency conversion  service
+Now, as we have our currency exchange working, let's build our currency conversion  service and let the conversion service talk to the exchange service and get the conversion rate.
+
+Dependencies - 
+
+		lombok
+  		spring deve tools
+    		config client
+      		acturator 
+		
+
+application 
+		
+		spring.application.name=currency-conversion
+		server.port=8100
+		
+		spring.config.import=optional:configserver:http://localhost:8888
+		
+
+model
+
+
+			package com.myprojects.microservices.model;
+		
+		import lombok.AllArgsConstructor;
+		import lombok.Data;
+		import lombok.NoArgsConstructor;
+		
+		@Data
+		@AllArgsConstructor
+		@NoArgsConstructor
+		public class CurrencyConversion {
+			
+			
+			
+			private Long id;
+			//@Column(name="currency_from")
+			private String from;
+			//@Column(name="currency_to")
+			private String to;
+			private double quantity;
+			private double conversionMultiple;
+			private double totalCalculateAmount;
+			private String environment; 
+			
+			
+			
+		
+		}
+
+
+controller
+
+
+			package com.myprojects.microservices.controller;
+
+		import org.springframework.beans.factory.annotation.Autowired;
+		import org.springframework.core.env.Environment;
+		import org.springframework.web.bind.annotation.GetMapping;
+		import org.springframework.web.bind.annotation.PathVariable;
+		import org.springframework.web.bind.annotation.RestController;
+		
+		import com.myprojects.microservices.model.CurrencyConversion;
+		
+		@RestController
+		public class CurrencyConversionController {
+			
+			@Autowired
+			private Environment env;
+			
+			@GetMapping("currency-conversion/from/{from}/to/{to}/of/{of}")
+			public CurrencyConversion convertedvalue(@PathVariable String from, @PathVariable String to, @PathVariable double of) {
+				
+				
+				String port = env.getProperty("local.server.port");
+				
+				
+				return new CurrencyConversion (101L,from,to,of, 65, of*65, port );
+				
+			}
+		
+		}
+
+
+output of these hardcoded values 
+
+	http://localhost:8100/currency-conversion/from/USD/to/INR/of/20
+
+ output
+
+	 	{
+	  "id": 101,
+	  "from": "USD",
+	  "to": "INR",
+	  "quantity": 20,
+	  "conversionMultiple": 65,
+	  "totalCalculateAmount": 1300,
+	  "environment": "8100"
+	}
+		
+
 
 
