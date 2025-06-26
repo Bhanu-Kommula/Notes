@@ -456,3 +456,107 @@ output of these hardcoded values
 
 
 
+****Feign Client****
+
+Now let's talk to currency exchange from currency conversion, and then get the values 
+
+So, for the communication over the rest btw different services, to avoid boilerplate code and resttemplate or webclient, we can use Feign Client for the communication.
+
+FEIGN Client is a declarative HTTP client developed by Netflix and used in Spring cloud.
+
+Add the OpenFeign dependency 
+
+
+Now to establish a proxy, so lets create a new interface 
+
+	package com.myprojects.microservices.proxy;
+	
+	import org.springframework.cloud.openfeign.FeignClient;
+	import org.springframework.web.bind.annotation.GetMapping;
+	import org.springframework.web.bind.annotation.PathVariable;
+	
+	import com.myprojects.microservices.model.CurrencyConversion;
+	
+	@FeignClient(name = "currency-exchange", url = "localhost:8000") // in name we will keep the application name that we want to call and in url
+	//we say the location of that application running
+	
+	public interface CurrencyExchnageProxy {
+	
+		@GetMapping("/currency-exchange/from/{from}/to/{to}")
+		public CurrencyConversion getExchnageValue(@PathVariable String from, @PathVariable String to) ;
+			 
+			
+			
+	}
+
+We have to enable the feign client in main app
+
+
+		package com.myprojects.microservices;
+		
+		import org.springframework.boot.SpringApplication;
+		import org.springframework.boot.autoconfigure.SpringBootApplication;
+		import org.springframework.cloud.openfeign.EnableFeignClients;
+		
+		@SpringBootApplication
+		@EnableFeignClients
+		public class CurrencyConversionServiceApplication {
+		
+			public static void main(String[] args) {
+				SpringApplication.run(CurrencyConversionServiceApplication.class, args);
+			}
+		
+		}
+		
+
+Controller
+
+		package com.myprojects.microservices.controller;
+		
+		import org.springframework.beans.factory.annotation.Autowired;
+		import org.springframework.web.bind.annotation.GetMapping;
+		import org.springframework.web.bind.annotation.PathVariable;
+		import org.springframework.web.bind.annotation.RestController;
+		
+		import com.myprojects.microservices.model.CurrencyConversion;
+		import com.myprojects.microservices.proxy.CurrencyExchnageProxy;
+		
+		@RestController
+		public class CurrencyConversionController {
+			
+			
+			@Autowired
+			private CurrencyExchnageProxy proxy;
+			
+			
+			@GetMapping("currency-conversion/from/{from}/to/{to}/of/{of}")
+			public CurrencyConversion convertedvalue(@PathVariable String from, @PathVariable String to, @PathVariable double of) {
+				
+				
+				
+				
+				return new CurrencyConversion (101L,from,to,of, 65, of*65, "" );
+				
+			}
+			
+			
+			@GetMapping("currency-conversion-feign/from/{from}/to/{to}/of/{of}")
+			public CurrencyConversion convertedvalueFeign(@PathVariable String from, @PathVariable String to, @PathVariable double of) {
+				
+		 CurrencyConversion currencyConversion = proxy.getExchnageValue(from, to);
+				
+				
+				return new CurrencyConversion(currencyConversion.getId(),
+						from, to, of,
+						currencyConversion.getConversionMultiple(),
+						of*(currencyConversion.getConversionMultiple()),
+						currencyConversion.getEnvironment());
+			
+			}
+			
+			
+		
+		}
+
+
+
