@@ -178,6 +178,19 @@ Now lets say I want to run 2 instance of this application running to do that
 
   	now rename this duplicate as 8001 (currency-exchange-service - CurrencyExchangeServiceApplication8001) and to make this to run in 8001 port click on arguments and write this command -Dserver.port=8001
 
-		run this --- http://localhost:8001/currency-exchange/from/INR/to/USD  will get the same output but from differnet port so for the same application we have 2 instances now 
+		run this --- http://localhost:8001/currency-exchange/from/INR/to/USD  will get the same output with diff port no but from differnet port so for the same application we have 2 instances now 
+
+		{
+		  "id": 1,
+		  "from": "INR",
+		  "to": "USD",
+		  "conversionMultiple": 65,
+		  "environment": "8001"
+		}
+
+
+
+  
+
 
 
