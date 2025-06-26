@@ -156,7 +156,28 @@ So added a new variable and also added a constructor without env.
             	
             }
 
-Using Environment spring class to get the port by using env.getProperty("local.server.port");
+Using the Environment spring class to get the port by using env.getProperty("local.server.port");
 
+
+output 
+
+
+					{
+		  "id": 1,
+		  "from": "INR",
+		  "to": "USD",
+		  "conversionMultiple": 65,
+		  "environment": "8000"
+		}
+
+
+Now lets say I want to run 2 instance of this application running to do that 
+
+	right click and select run configuration ---> add 8000 to name of current application to show differnece (currency-exchange-service - CurrencyExchangeServiceApplication8000)
+ 	now duplicate the application ( left handside right click on the currency exchange and select duplicate 
+
+  	now rename this duplicate as 8001 (currency-exchange-service - CurrencyExchangeServiceApplication8001) and to make this to run in 8001 port click on arguments and write this command -Dserver.port=8001
+
+		run this --- http://localhost:8001/currency-exchange/from/INR/to/USD  will get the same output but from differnet port so for the same application we have 2 instances now 
 
 
