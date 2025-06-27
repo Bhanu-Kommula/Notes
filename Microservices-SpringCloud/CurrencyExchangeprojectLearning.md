@@ -552,11 +552,166 @@ Controller
 						of*(currencyConversion.getConversionMultiple()),
 						currencyConversion.getEnvironment());
 			
-			}
-			
-			
-		
+			}	
 		}
 
 
 
+So now as we have the chain working correctly,  in currency exchange proxy we are hard coding the url of currency exchange service.  lets say if we want to have multiple instances of this application, and how to see which is down and how to make sure load is shared among them equally ( load balancing) that's where go for service registry or naming server
+
+****Service Registry****
+
+So in microservices architecture, all the instances of all the microservices would register with a service registry. So the currency conversion microswervice , currency exchange microservice, and other microservices would register with this naming server called the service registry.
+
+So let's say the Currency conversion service would like to talk to the currency exchange service, then it would ask the service registry what are the addresses of the currency exchange then the service registry would return those back to the currency conversion then they can establish the communication. 
+
+
+So simply all the instances would register with the naming server/ service registry, and whenever ever currency conversion microservice want to find out the active instances then it asks the naming server to get the instances and load balances btw them.
+
+
+
+Now lets start creating with Naming server and Spring provides is Eureka
+
+New starter project 
+
+dependencies 
+
+ 	Spring web tools
+  	Eureka server
+   	Spring Actuator 
+
+
+So we have to enable the @EnableEurekaServer in the main app
+
+		package com.myprojects.microservices;
+		
+		import org.springframework.boot.SpringApplication;
+		import org.springframework.boot.autoconfigure.SpringBootApplication;
+		import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
+		
+		@SpringBootApplication
+		@EnableEurekaServer
+		public class NamingServerApplication {
+		
+			public static void main(String[] args) {
+				SpringApplication.run(NamingServerApplication.class, args);
+			}
+		
+		}
+
+		
+Now we have to make the configuration in application.properties 
+
+port to 8761
+And there are also a couple of other configurations which are recommended by Eureka, We are creating the Eureka server, so we don't want to register with itself To do that, we have to add a couple of properties 
+		
+		
+		spring.application.name=naming-server
+		server.port=8761
+		
+		eureka.client.register-with-eureka=false
+		eureka.client.fetch-registry=false
+
+
+So now we have our naming server, so let's connect our microservices to the naming server. So let's connect currency conversion and exchange service to connect with the naming server, and then conversion talks to exchange via the naming server 
+
+
+
+To do that, add a dependency, Eureka Discovery Client, in both the services, and then refresh the Eureka console 
+
+		http://localhost:8761/
+
+then you will see both the services registered with the Eureka server, but to be really safe, lets configure the url in the application.proerties 
+ 
+Currency conversion application.properties  just add eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
+
+
+		spring.application.name=currency-exchange
+		server.port=8000
+		
+		spring.config.import:optional:configserver:http://localhost:8888
+		
+		spring.jpa.show-sql=true
+		spring.datasource.url= jdbc:h2:mem:testdb
+		spring.h2.console.enabled=true
+		
+		spring.jpa.defer-datasource-initialization=true
+		
+		eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka		
+
+
+Now let's work on load balancing btw multiple instances of currency exchange and currency conversion 
+
+
+just remove the url from the proxy url and add 	@FeignClient(name = "currency-exchange")
+
+
+	package com.myprojects.microservices.proxy;
+	
+	import org.springframework.cloud.openfeign.FeignClient;
+	import org.springframework.web.bind.annotation.GetMapping;
+	import org.springframework.web.bind.annotation.PathVariable;
+	
+	import com.myprojects.microservices.model.CurrencyConversion;
+	
+	//@FeignClient(name = "currency-exchange", url = "localhost:8000") // in name we will keep the application name that we want to call and in url
+	//we say the location of that application running
+	@FeignClient(name = "currency-exchange")
+	public interface CurrencyExchnageProxy {
+	
+		@GetMapping("/currency-exchange/from/{from}/to/{to}")
+		public CurrencyConversion getExchnageValue(@PathVariable String from, @PathVariable String to) ;
+			 
+			
+			
+	}
+
+
+
+So inside the currency conversion service there is a load balancer talking to naming server finding the instances and doing automatic load balancing btw them and this is called ****Client side Load Balancing**** this is happening throught **Feign**
+
+In the earlier versions of spring cloud, the load balance which was used was Ribbon, in the recent version spring cloud shifted to using spring cloud load balancer as the load balancer. if you are using **Eureka** and **Feign** then loadbalancing comes for free this is client side load balanacing. 
+
+
+
+ Now One of the most imp challenges when it comes to microservices is that lots of these microservices will have common features, lets say i want to implment rate limiting or authentication and authorisation which is same fro all the services then why to write for each service instead we can write at one palce and use it for the services, then the concept of **API gateway** comes into picture. So before calling any service the req route through the API Gateway. lets say there is a request coming to conversion it would route throguht the api gateway. lets say if we want to call exchange from conversion even that has to route throught the APi Gateway
+
+ lets setup API gateway project
+
+Dependencies
+
+	lombok
+ 	spring dev tools
+  	Actuator
+   	Eureka Discovery Client // So to registry API gateway with eureka
+    	Reactive gateway 
+
+
+**Spring Cloud Gateway** earlier the API gateway recommended for spring cloud was **Zuul**, but Zuul is no longer avaiable, Spring cloud gateway is the recommended one right now.
+
+it is simple, yet effective way to route to APIs
+So all the common features are implemented here, so it will be applicable to all the microservices as they are the common features.
+
+it provides cross cutting concerns: concerns which applicable to multiple microservices like 
+	Security
+ 	Monitoring/metrics etc
+
+  It takes reactive approach, as it is built on top of Spring WebFlux
+
+  Features:
+  
+  	Match routes on any req attribute
+   	Define predicates (predicates are basically how you can match again a req) and filters ( add functionality or features for ex  authentication can be a filter authorization can be a filter logging can be a filter.
+	it can integrate with Spring cloud Discovery client( load balancing) and it can discover the active instances of your service and load balance btw them. 
+ 	path rewriting ( what ever path coming we can change it before sending to the proxied services ( proxied services are microservices in our case conversion and exchange services)
+
+
+Now lets make the configuration in application.properties of api-gateway like port and connect to eureka
+
+		spring.application.name=api-gateway
+		server.port=8765
+		
+		eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
+
+ 	
+ 
