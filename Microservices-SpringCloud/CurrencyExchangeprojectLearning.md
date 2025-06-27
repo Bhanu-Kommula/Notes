@@ -360,6 +360,7 @@ Dependencies -
 
 		lombok
   		spring deve tools
+    		Sprinf web
     		config client
       		acturator 
 		
