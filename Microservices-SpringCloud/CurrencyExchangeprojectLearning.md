@@ -716,3 +716,266 @@ Now lets make the configuration in application.properties of api-gateway like po
 
  	
  
+As we have api gateway ready, we have already registered the api gateway with the Eureka naming server, 
+Let's say we want to talk toa  currency exchange service, in Eureka, the currency conversion service is registered with the name CURRENCY-CONVERSION
+and let's pick the path to currency conversion /currency-conversion/from/USD/to/INR/of/1000
+
+		http://localhost:8765/CURRENCY-CONVERSION/currency-conversion/from/USD/to/INR/of/1000
+  But to run this, we need to configure one more thing in the application.properties of  api gateway, so we are trying So here we passing the name that CURRENCY-CONVERSION is registered with Eureka, 
+  So we want the API gateway to talk with Eureka and find the server location, and then execute the request to the url path.   So to enable this feature in spring api Gateway we need to add an application property spring.cloud.gateway.discovery.locator.enabled=true
+
+
+	spring.application.name=api-gateway
+				server.port=8765
+	
+	eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
+	
+					
+	spring.cloud.gateway.discovery.locator.enabled=true
+
+
+SO now whenever you have a client for currency conversion, then we can give this url nd we can implement all the common features in the APi Gateway and the api gateway will take care of the common features, then invoke the currency conversion. 
+
+URL for currency exchange 
+
+	http://localhost:8765/CURRENCY-EXCHANGE/currency-exchange/from/USD/to/INR
+
+
+ So in the URL the Eureka name is only uppercase, so to make it lowercase, we can use the property
+
+ 		spring.cloud.gateway.discovery.locator.lowerCaseServiceId=true
+
+   Now URLs are 
+   
+    		http://localhost:8765/currency-exchange/currency-exchange/from/USD/to/INR
+      		http://localhost:8765/currency-conversion/currency-conversion/from/USD/to/INR/of/1000
+
+
+
+
+
+
+so now we know how to route throught the eureka server, and redirect all the request through API gateway. Now lets see how to build custom routes 
+
+one of the option to built custom routes is through the configuration file. 
+
+
+create new class APIgatewayConfiguration class, and this class would contain few beans (configure few routes)
+
+
+
+********CHECK ABOUT CUSTOM ROUTES AND LOGGING FILTERS********
+
+
+
+****CIRCUIT BREAKER****
+
+So in a microservice architecture there is a complex call chain, like one service call other servcie and that service calls another service. what if one of the service is down or is very slow. then their would be an impact on complete chain. 
+
+
+questions are: 
+
+	1 - can we return a fallback response if a serivce is down? ( lets say if microserivce4 is down in the microservice3 can I return a fallback response? can I configure a defult response? this might not always be possible for ex in case of  credit card transcation, we do not have any fallback reponse possibile, in case of a shopping application instead of returing a set of products we can return a default products  that possible 
+	2 - Can we implement a circuit breaker pattern to reduce load? ( lets say if we see serivce4 is down instead of repeatedly hitting it casuing it to go down can i actually return the default response back with even hitting the service4)
+ 	3 - can we retry requests in case of temporary failures? ( if there is a temporary failure from a microservce4 then can i retry few more time and only when it failed multiple times then i return a default response back.
+  	4- can we implment rate limiting ( I would like to allow only certain number of calls to a specific microservice in a specific period of time) 
+
+	Solution: If we are using spring boot then their is a Circuit Breaker framework which is avaialble called Resilience4J
+
+
+ **Resilience4j**  is a light weight easy to use fault tolerance library inspired by netflix Hystrix but designed for java 8 and functional programming. 
+ ( in the older versions of springboot and spring cloud netflix hystrix was recomended circuit breaker framework) but now resilience4J
+
+ Now lets use the currency-exchange service to work with concept of circuit breaker
+Add these following dependencies to the currency-exchange in pom.xml or right click add starters
+
+		Resilience4j
+  		Actuator 
+    		AOP  --- (  <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>   )
+
+
+So to understand the circuit breaker feature lets create a new controller class, lets call it as circuit breaker controller
+
+		package com.myprojects.microservices.controller;
+		
+		import org.springframework.web.bind.annotation.GetMapping;
+		import org.springframework.web.bind.annotation.RestController;
+		
+		@RestController
+		public class CircuitBreakerController {
+			
+			@GetMapping("/sample-api")
+			public String sampleApi() {
+				return "Hello, sample text";
+			}
+		
+		}
+
+  We have implemented a simple rest api. Now let's focus on circuit breker features, 
+
+  Lets start with a simple feature of circuitbreaker called **Retry**
+
+
+  	package com.myprojects.microservices.controller;
+	
+	import org.springframework.http.ResponseEntity;
+	import org.springframework.web.bind.annotation.GetMapping;
+	import org.springframework.web.bind.annotation.RestController;
+	import org.springframework.web.client.RestTemplate;
+	
+	
+	@RestController
+	public class CircuitBreakerController {
+		
+		@GetMapping("/sample-api")
+		public String sampleApi() {
+		ResponseEntity<String>	entity = new RestTemplate().getForEntity("http://localhost:8080/some-dummy-url", String.class);
+			
+			
+			
+			
+			return entity.getBody();
+		}
+	
+	}
+
+we added a dummy  url which is not their, that way the service will through error. so now lets say our service is down temporarly and sometimes you know that if we invoke the sameting multiple time it would give a response back then we use @Retry.
+
+So if there is any failure in the execution of this method, it would be retry 3 times and if it fails to load after 3 tries then it will through the error back.
+		
+  	package com.myprojects.microservices.controller;
+		
+		import org.springframework.http.ResponseEntity;
+		import org.springframework.web.bind.annotation.GetMapping;
+		import org.springframework.web.bind.annotation.RestController;
+		import org.springframework.web.client.RestTemplate;
+		
+		import io.github.resilience4j.retry.annotation.Retry;
+		
+		@RestController
+		public class CircuitBreakerController {
+			
+			@GetMapping("/sample-api")
+			@Retry(name = "default")
+			public String sampleApi() {
+			ResponseEntity<String>	entity = new RestTemplate().getForEntity("http://localhost:8080/some-dummy-url", String.class);
+				
+				
+				
+				
+				return entity.getBody();
+			}
+		
+		}
+
+
+
+Now as we know it will retry for 3 times, how can we specify a specif number of retry interval. so we can create our own specific retry configurations.
+
+goto application.properties 
+
+		resilience4j.retry.instances.sample-api.maxRetryAttempts=5     ( sample-api is the name of the circuit breaker)
+
+  CircuitBrekaercontroller
+
+	package com.myprojects.microservices.controller;
+	
+	import org.springframework.http.ResponseEntity;
+	import org.springframework.web.bind.annotation.GetMapping;
+	import org.springframework.web.bind.annotation.RestController;
+	import org.springframework.web.client.RestTemplate;
+	
+	import io.github.resilience4j.retry.annotation.Retry;
+	
+	@RestController
+	public class CircuitBreakerController {
+		
+		@GetMapping("/sample-api")
+		@Retry(name = "sample-api")
+		public String sampleApi() {
+		ResponseEntity<String>	entity = new RestTemplate().getForEntity("http://localhost:8080/some-dummy-url", String.class);
+			
+			
+			
+			
+			return entity.getBody();
+		}
+	
+	}
+
+  
+ 
+we can also mention the fallbackmethod to call incase of failure 
+
+	package com.myprojects.microservices.controller;
+	
+	import org.springframework.http.ResponseEntity;
+	import org.springframework.web.bind.annotation.GetMapping;
+	import org.springframework.web.bind.annotation.RestController;
+	import org.springframework.web.client.RestTemplate;
+	
+	import io.github.resilience4j.retry.annotation.Retry;
+	
+	@RestController
+	public class CircuitBreakerController {
+		
+		@GetMapping("/sample-api")
+		@Retry(name = "sample-api", fallbackMethod = "hardcodedResponse")
+		public String sampleApi() {
+		ResponseEntity<String>	entity = new RestTemplate().getForEntity("http://localhost:8080/some-dummy-url", String.class);
+			
+			
+			
+			
+			return entity.getBody();
+		}
+		
+		public String hardcodedResponse(Exception e) {
+			return "fallback-response";
+		}
+	
+	}
+
+So we said 	@Retry(name = "sample-api", fallbackMethod = "hardcodedResponse") fallback method is hardcodedResponse and so we created a method so instead of error now it will give text as output fallback-response
+
+we can also do somemore confiurations for our retry  in application.properties
+
+		like what should be time interval between the retries by  		resilience4j.retry.instances.sample-api.wait-duration=2s
+
+
+application.properties
+
+		  spring.application.name=currency-exchange
+		server.port=8000
+		
+		spring.config.import:optional:configserver:http://localhost:8888
+		
+		spring.jpa.show-sql=true
+		spring.datasource.url= jdbc:h2:mem:testdb
+		spring.h2.console.enabled=true
+		
+		spring.jpa.defer-datasource-initialization=true
+		
+		eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
+		
+		
+		resilience4j.retry.instances.sample-api.max-attempts=5
+		resilience4j.retry.instances.sample-api.wait-duration=2s
+
+
+
+  We can also do exponential backoff 
+  
+  	resilience4j.retry.instances.sample-api.enable-exponential-backoff=true
+
+  So, now the fallback response is given later because each subsequent retry would take even more time. 
+
+
+
+
+
+  
+ 
