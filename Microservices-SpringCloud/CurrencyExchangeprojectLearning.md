@@ -977,5 +977,75 @@ application.properties
 
 
 
-  
+  So retry is useful when temporaryly down, so retry will give sometime and then retry but what if it service is down for long time, in that case we will go for the circuit braker design pattern. 
+
+
+
+
+  Now lets work on circuit breaker feature 
+
+
+  		package com.myprojects.microservices.controller;
+
+		import org.springframework.http.ResponseEntity;
+		import org.springframework.web.bind.annotation.GetMapping;
+		import org.springframework.web.bind.annotation.RestController;
+		import org.springframework.web.client.RestTemplate;
+		
+		import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+		
+		
+		@RestController
+		public class CircuitBreakerController {
+			
+			@GetMapping("/sample-api")
+			@CircuitBreaker(name = "default", fallbackMethod = "hardcodedResponse")
+			public String sampleApi() {
+			ResponseEntity<String>	entity = new RestTemplate().getForEntity("http://localhost:8080/some-dummy-url", String.class);
+				
+				
+				
+				
+				return entity.getBody();
+			}
+			
+			public String hardcodedResponse(Exception e) {
+				return "fallback-response";
+			}
+		
+		}
+
+
+ So if a microservice4 is down, then the microservice3 will say this microservice is failing every time it's called, so why to call it and add load to it so it will directly return the default response. 
+
+
+ and but how to know if that is service is back up running and I can call it again?
+
+
+ So circuit breaker has 3 states 
+
+ 	Closed
+  	Open
+   	half_open
+
+    	In the closed state,  I will always be continuously call the dependent service
+     	In the Open state, the it will not call the dependent service, it will directly return the fallback response. 
+	In the half_open state, circuit breaker would be sending a percentage of the request to the dependent service and for the rest of the requests it would return the fallback response 
+
+ When does the circut breaker switch from one state to another? 
+
+ 	So when we start the application the circuit breaker is in closed state
+  	lets say Im calling the dependent serivice 10,000 times, and  see all them are failing or 90% of them are failing, then in that case the circuit breaker will switch to the open state
+   	once its switches to the open state it waits for some time ( we can configure the wait duration) after that wait duration it would switch to the half_open state 
+    during the half-open state the circuit breaker would try and see if serice is up.  so it send % of requests to see if its up or not ( we can configure it) AND if it gets proper responses to that then go back to the closed state  and still if its not getting the proper respnses then go back to open state
+
+
+    ( check resilience4j site for circuit breaker  configuration that we can configure) 
+
+
+some example configurations
+
+	resilience4j.circuitbreaker.instances.sample-api.failure-rate-threshold=90  --- so only afyter 90% of the req fail then it switch to the open state
+ 
+
  
