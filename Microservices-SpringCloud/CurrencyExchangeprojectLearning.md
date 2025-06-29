@@ -1049,3 +1049,120 @@ some example configurations
  
 
  
+Lets look at **Rate Limiting**
+
+So I'm rate limiting, we are setting a time period and during this time period we are allowing only specific number of calls. let's say for example, 10s --> 10,000 calls 
+ to specific api (sample-api in our case)  		@RateLimiter(name="sample-api")
+
+
+Controller class
+
+		package com.myprojects.microservices.controller;
+	
+	import org.springframework.http.ResponseEntity;
+	import org.springframework.web.bind.annotation.GetMapping;
+	import org.springframework.web.bind.annotation.RestController;
+	import org.springframework.web.client.RestTemplate;
+	
+	import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+	import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+	
+	
+	@RestController
+	public class CircuitBreakerController {
+		
+		@GetMapping("/sample-api")
+		//@CircuitBreaker(name = "sample-api", fallbackMethod = "hardcodedResponse")
+		@RateLimiter(name="sample-api")
+		public String sampleApi() {
+		ResponseEntity<String>	entity = new RestTemplate().getForEntity("http://localhost:8080/some-dummy-url", String.class);
+			
+			
+			
+			
+			return entity.getBody();
+		}
+		
+		public String hardcodedResponse(Exception e) {
+			return "fallback-response";
+		}
+	
+	}
+	
+	 
+Application.properties		
+		
+  	spring.application.name=currency-exchange
+		server.port=8000
+		
+		spring.config.import:optional:configserver:http://localhost:8888
+		
+		spring.jpa.show-sql=true
+		spring.datasource.url= jdbc:h2:mem:testdb
+		spring.h2.console.enabled=true
+		
+		spring.jpa.defer-datasource-initialization=true
+		
+		eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
+		
+		
+		resilience4j.retry.instances.sample-api.max-attempts=5
+		resilience4j.retry.instances.sample-api.wait-duration=2s
+		resilience4j.retry.instances.sample-api.enable-exponential-backoff=true
+		
+		
+		resilience4j.circuitbreaker.instances.sample-api.failure-rate-threshold=90
+		
+		resilience4j.ratelimiter.instances.sample-api.limit-for-period=5   
+		resilience4j.ratelimiter.instances.sample-api.limit-refresh-period=10s
+
+resilience4j.ratelimiter.instances.sample-api.limit-for-period=5   
+		resilience4j.ratelimiter.instances.sample-api.limit-refresh-period=10s   
+  
+  so we are saying to allow 5 reqs per 10s period. 
+
+
+
+Addition to the rate limiter, we can also configure how many concurrent calls are allowed. this is called as **BulkHead**. So for each of the apis in the microservice, we can configurer the bulkhed.
+	
+	package com.myprojects.microservices.controller;
+	
+	import org.springframework.http.ResponseEntity;
+	import org.springframework.web.bind.annotation.GetMapping;
+	import org.springframework.web.bind.annotation.RestController;
+	import org.springframework.web.client.RestTemplate;
+	
+	import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+	import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+	import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+	
+	
+	@RestController
+	public class CircuitBreakerController {
+		
+		@GetMapping("/sample-api")
+		@CircuitBreaker(name = "sample-api", fallbackMethod = "hardcodedResponse")
+		@RateLimiter(name="sample-api")
+		@Bulkhead(name="sample-api")
+		public String sampleApi() {
+		ResponseEntity<String>	entity = new RestTemplate().getForEntity("http://localhost:8080/some-dummy-url", String.class);
+			
+			
+			
+			
+			return entity.getBody();
+		}
+		
+		public String hardcodedResponse(Exception e) {
+			return "fallback-response";
+		}
+	
+	}
+
+
+application.properties add
+
+  	resilience4j.bulkhead.instances.sample-api.max-concurrent-calls=10
+
+   
+  
